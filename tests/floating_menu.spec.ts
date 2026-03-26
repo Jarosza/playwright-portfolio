@@ -15,4 +15,24 @@ test.describe('floating menu', () => {
       await expect(targetSection).toBeInViewport();
     }
   });
+
+  test('stays visible and pinned at the bottom while scrolling', async ({ page }) => {
+    await page.goto('https://jarosza.github.io/portfolio/');
+
+    const navBar = page.locator('nav').first();
+    await expect(navBar).toBeVisible();
+
+    const navPosition = await navBar.evaluate((el) => window.getComputedStyle(el).position);
+    expect(['fixed', 'sticky']).toContain(navPosition);
+
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await expect(navBar).toBeVisible();
+    await expect(navBar).toBeInViewport();
+
+    const isNearBottomEdge = await navBar.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return window.innerHeight - rect.bottom <= 60;
+    });
+    expect(isNearBottomEdge).toBe(true);
+  });
 });
