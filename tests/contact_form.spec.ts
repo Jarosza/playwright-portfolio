@@ -17,19 +17,16 @@ test.describe('Contact form', () => {
     await nameInput.fill('Anna Test');
     await emailInput.fill('test@test.pl');
     await messageInput.fill('To jest automatyczny test wysyłki formularza.');
-
     await submitBtn.click();
 
-    await expect(page.getByText('The form was submitted successfully.')).toBeVisible();
-
-   
+    await expect(page.getByText('Dziękuję! Wiadomość została wysłana.')).toBeVisible();
   });
 
   test('Contact form - incorrect data (invalid email)', async ({ page }) => {
+    
     await nameInput.fill('Anna Test');
     await emailInput.fill('test@'); // Incorrect email format
     await messageInput.fill('This is automatical message.');
-
     await submitBtn.click();
     
     const isInvalid = await emailInput.evaluate((el) => !el.checkValidity());
